@@ -9,6 +9,10 @@ Book Recommendation Chatbot can be used to discover exciting books tailored to u
 
 *Given a dataset containing information about books (book name, author,genre, rating , description), build a chatbot that parses the dataset and provides accurate book recommendations based on user's interest*.
 
+#### AI model: 
+ChatGPT model used is : gpt-3.5-turbo
+
+
 #### Data Sources:
 
 We have a dataset `goodreads_data.csv` where  each row describes the features of a single book and also has a small description and link at the end. The chatbot that we build will leverage LLMs to parse this `Genere` , `Author` and  `Description` column and provide recommendations
