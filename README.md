@@ -3,15 +3,7 @@
 
 ## Part 1: Project Introduction
 
-The two main principles of writing a good prompt:
-1.  Providing clear instructions,
-2.  Enhancing LLM reasoning capabilities.
-
-Under providing clear instructions, you learnt how to structure the body of a prompt through 5 components - **Task, Role, Context, Guidelines and Output Format**.
-
-
-Let’s now get started on designing our first LLM application - BookRecommendation AI.
-
+Let’s now get started on designing our LLM application - BookRecommendation AI.
 
 #### Project Goals
 
@@ -20,13 +12,11 @@ Book Recommendation Chatbot can be used to discover exciting books tailored to u
 
 #### Problem Statement
 
-*Given a dataset containing information about books (book name, author,genere, rating , description), build a chatbot that parses the dataset and provides accurate book recommendations based on user's interest*.
-
-## Part 2: System Design
+*Given a dataset containing information about books (book name, author,genre, rating , description), build a chatbot that parses the dataset and provides accurate book recommendations based on user's interest*.
 
 #### Data Sources:
 
-We have a dataset `goodreads_data.csv` where  each row describes the features of a single book and also has a small description and link at the end. The chatbot that we build will leverage LLMs to parse this `Genere` , `Rating' and  `Description` column and provide recommendations
+We have a dataset `goodreads_data.csv` where  each row describes the features of a single book and also has a small description and link at the end. The chatbot that we build will leverage LLMs to parse this `Genere` , `Author` and  `Description` column and provide recommendations
 
 - Determine the user's interest. For simplicity, we have used below features to encapsulate the user's interest. The features are as follows:
     - Genres
@@ -38,11 +28,16 @@ We have a dataset `goodreads_data.csv` where  each row describes the features of
 
 After that the chatbot lists down the top 3 books that are the most relevant, and engages in further conversation to help the user find the best one.
 
+## Part 2: System Design
+
+![SystemDesign](SystemDesign.png)
 #### Design Choices : Building the Chatbot
 
 Now let's go ahead and understand the system design for the chatbot.
 
-I'm leveraging the same system designed used for learning and build the chat bot in following stages
+I'm leveraging the same system designed used earlier in classes for learning and building the chat bot in following stages:
+
+
 |`Stage 1`
 
 - Intent Clarity Layer
@@ -65,9 +60,9 @@ Let's now look at a brief overview of the major functions that form the chatbot.
 - `initialize_conversation()`: This initializes the variable conversation with the system message.
 - `get_chat_completions()`: This takes the ongoing conversation as the input and returns the response by the assistant
 - `moderation_check()`: This checks if the user's or the assistant's message is inappropriate. If any of these is inappropriate, it ends the conversation.
-- `intent_confirmation_layer()`: This function takes the assistant's response and evaluates if the chatbot has captured the user's profile clearly. Specifically, this checks if the following properties for the user has been captured or not  Author, Genere and short description containing interest
-- `dictionary_present()`: This function checks if the final understanding of user's profile is returned by the chatbot as a python dictionary or not. If there is a dictionary, it extracts the information as a Python dictionary.
-- `compare_books_with_user()`: This function compares the user's profile with the different books and come back with the top 3 recommendations baed on rating.
+- `intent_confirmation_layer()`: This function takes the assistant's response and evaluates if the chatbot has captured the user's interests and preferences clearly. Specifically, this checks if the following properties for the user has been captured or not  Author, Genere and short description containing interest and rating
+- `dictionary_present()`: This function checks if the final understanding of user's interest is returned by the chatbot as a python dictionary or not. If there is a dictionary, it extracts the information as a Python dictionary.
+- `compare_books_with_user()`: This function compares the user's interest with the different books and come back with the top 3 recommendations based on rating.
 - `initialize_conv_reco()`: Initializes the recommendations conversation
 
 ## Part 3: Implementation
@@ -99,13 +94,13 @@ This stage consists of the steps that will extract information and form book fea
 
 ### `product_map_layer()`:
 
--  Use a prompt that assign it the role of a Book Specifications Classifier, whose objective is to extract key features and classify them based on book fields and descriptions.
+-  Use a prompt that assign it the role of a Book Specifications Classifier, whose objective is to extract key features and classify them based on book fields and features.
 
-- Provide step-by-step instructions for extracting book features from description as well. This function is responsible for extracting key features and criteria from book descriptions. 
+- Provide step-by-step instructions for extracting book features from description as well. This function is responsible for extracting key features and criteria from book features. 
 
-- Since all the details of the books are already available in given columns and there is no logic is to be applied for the segregation of data we will use simple pandas commands to extact the required information and create books faetures column which will contin a dictionary with our key and values
+- Since all the details of the books are already available in given columns and there is no logic is to be applied for the segregation of data we will use simple pandas commands to extact the required information and create books features column which will contin a dictionary with our keys and values
 
-- Assign specific rules for each feature (e.g., Author, Description , Genres, Avg Rating) and associate them with the appropriate classification rating value.
+- Assign specific rules for each feature (e.g., Author, Description , Genres, Avg Rating) and associate them with the appropriate classification to extract the required information.
 
 - Includes Few Shot Prompting (sample conversation between the user and assistant) to demonstrate the expected result of the feature extraction and classification process.
 
@@ -118,9 +113,10 @@ This function compares the user's profile with the different books and come back
 - Sort the books based on their scores in descending order.
 - Return the top 3 books as a JSON-formatted string.
 
-### Scoring Criterion:
+|Scoring Criterion:
+
 - Genre : Score is incremented for every Genre match 
-    - Eg: if user requirement is Classic and Fiction and the book feature has both then the score would be incremented by 2
+        - Eg: if user requirement is Classic and Fiction and the book feature has both then the score would be incremented by 2
 
 - Author: Score is incremented by 1 if there is match on Author name as well
 
@@ -128,7 +124,7 @@ This function compares the user's profile with the different books and come back
 
 ### `product_validation_layer()`:
 
-This function verifies that the laptop recommendations are good enough, has score greater than 2, and matches the user's requirements.
+This function verifies that the book recommendations are good enough, has score greater than 2, and matches the user's requirements.
 
 ### 3.3: Book Recommendation Layer
 
@@ -143,3 +139,8 @@ Finally, we come to the product recommendation layer. It takes the output from t
 Bringing everything together, we create a `diagloue_mgmt_system()` function that contains the logic of how the different layers would interact with each other. This will be the function that we'll call to initiate the chatbot
 
 ### Challenges Faced
+
+- In book mapping step extracting and storing features from 10k records from dataset was time consuming.
+- Similarly in book extraction step matching user interest with each book feature was time comsuming
+- These two steps consume lot of time and affect user interractions and overall experience. I have tried to solve this by using time out but there might be more elegant solutions out there
+
