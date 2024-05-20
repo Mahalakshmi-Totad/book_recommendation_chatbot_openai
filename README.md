@@ -1,12 +1,7 @@
 # BookRecommendation AI 
 ##### By Mahalakshmi Totad
 
-## Part 1: Project Introduction
-
-Let’s now get started on designing our LLM application - BookRecommendation AI.
-
-#### Project Goals
-
+## Part 1:  Project Goals
 Book Recommendation Chatbot can be used to discover exciting books tailored to user preferences and interests. From different geners like thrilling mysteries, heartwarming romances, or thought-provoking non-fiction. **BookRecommendation AI, a chatbot that combines the power of large language models and rule-based functions to ensure relevant recommendations**.
 
 
